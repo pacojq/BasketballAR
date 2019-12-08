@@ -300,6 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8df1379683da56749b7e5261cbd5bf72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CartId: 0
+  BallPrefab: {fileID: 6367328545516528096, guid: b61d14bb049ee8542bb27597f7ca6486,
+    type: 3}
 --- !u!65 &7997953302992659966
 BoxCollider:
   m_ObjectHideFlags: 0
