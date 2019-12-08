@@ -6,35 +6,51 @@ public class PlayerBehaviour : MonoBehaviour
 
     public MainMenuCanvas MainMenuCanvas;
     public ScoreCanvas ScoreCanvas;
-    
+    public GameOverCanvas GameOverCanvas;
+
+    public AudioClip Coin;
+    public AudioClip Buzzer;
     
     public Transform SpawnAnchor;
 
     public BallBehaviour BallPrefab;
 
+    
+    public int Score { get; private set; }
+    public float SecondsLeft { get; private set; }
+    
+    private AudioSource _audio;
 
     private BallBehaviour _current;
-    private int _score;
 
     
     private bool _isTimerOn;
-    private float _secondsLeft = 90;
 
 
+    public void Awake()
+    {
+        _audio = transform.GetComponent<AudioSource>();
+    }
+    
     public void Reset()
     {
-        _score = 0;
+        Score = 0;
 
         _isTimerOn = false;
-        _secondsLeft = 90;
+        SecondsLeft = 90;
     }
 
     public void EndGame()
     {
         Debug.LogWarning("GAME OVER");
         
+        _audio.clip = Buzzer;
+        _audio.Play();
+        
         CartBehaviour.NextCartId = -1;
         _isTimerOn = false;
+        ScoreCanvas.gameObject.SetActive(false);
+        GameOverCanvas.gameObject.SetActive(true);
     }
     
     
@@ -44,10 +60,10 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (_isTimerOn)
         {
-            _secondsLeft -= Time.deltaTime;
-            ScoreCanvas.TextSeconds.SetText($"{Mathf.CeilToInt(_secondsLeft):00}");
+            SecondsLeft -= Time.deltaTime;
+            ScoreCanvas.TextSeconds.SetText($"{Mathf.CeilToInt(SecondsLeft):00}");
             
-            if (_secondsLeft <= 0)
+            if (SecondsLeft <= 0)
             {
                 EndGame();
                 return;
@@ -89,13 +105,14 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Debug.Log("SCORE!!!!");
         
-        _score++;
+        Score++;
         if (isMoneyBall)
-            _score++;
+            Score++;
 
-        // TODO sound
+        _audio.clip = Coin;
+        _audio.Play();
 
-        ScoreCanvas.TextScore.SetText($"Score: {_score}");
+        ScoreCanvas.TextScore.SetText($"Score: {Score}");
     }
 
 }

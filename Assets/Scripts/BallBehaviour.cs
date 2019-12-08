@@ -83,8 +83,6 @@ public class BallBehaviour : MonoBehaviour
     {
         _sw.Stop();
         long elapsed = _sw.ElapsedMilliseconds;
-        
-        // TODO check if elapsed is too big ?
 
         Vector2 mouseEnd = Input.mousePosition;
         float dy = mouseEnd.y - _mousePos.y;
@@ -104,6 +102,13 @@ public class BallBehaviour : MonoBehaviour
         
         this.transform.SetParent(parent);
         
+        
+        // Last shot ?
+        PlayerBehaviour player = FindObjectOfType<PlayerBehaviour>();
+        if (CartBehaviour.NextCartId >= 5 && player.SecondsLeft > 6)
+        {
+            StartCoroutine(LastShot(player));
+        }
         
         
 
@@ -136,8 +141,16 @@ public class BallBehaviour : MonoBehaviour
         MaxHeight += 0.005f * (spd - 5);
         MaxHeight = Mathf.Max(MaxHeight, 0.05f);
         
-        // TODO wiggle due to mouse x ?
-        
         Launch(target);
+    }
+
+
+
+
+
+    private IEnumerator LastShot(PlayerBehaviour player)
+    {
+        yield return new WaitForSeconds(4f);
+        player.EndGame();
     }
 }

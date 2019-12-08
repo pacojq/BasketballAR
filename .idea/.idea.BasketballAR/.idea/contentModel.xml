@@ -9,6 +9,7 @@
         <e p="Scripts" t="Include">
           <e p="BallBehaviour.cs" t="Include" />
           <e p="CartBehaviour.cs" t="Include" />
+          <e p="GameOverCanvas.cs" t="Include" />
           <e p="MainMenuCanvas.cs" t="Include" />
           <e p="MyTrackableEventHandler.cs" t="Include" />
           <e p="PlayerBehaviour.cs" t="Include" />
