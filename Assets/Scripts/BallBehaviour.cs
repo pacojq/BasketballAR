@@ -14,6 +14,8 @@ public class BallBehaviour : MonoBehaviour
 
     public float MaxHeight = 0.25f;
     public float Gravity = -0.9f;
+
+    public bool IsMoneyBall = false;
     
     private Stopwatch _sw;
     private Vector2 _mousePos;
@@ -64,7 +66,7 @@ public class BallBehaviour : MonoBehaviour
     {
         if (other.gameObject.CompareTag(TARGET_TAG))
         {
-            FindObjectOfType<PlayerBehaviour>().NotifyScore();
+            FindObjectOfType<PlayerBehaviour>().NotifyScore(this.IsMoneyBall);
         }
     }
 

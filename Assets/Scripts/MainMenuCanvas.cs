@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenuCanvasBehaviour : MonoBehaviour
+public class MainMenuCanvas : MonoBehaviour
 {
     public Button StartButton;
 
@@ -12,10 +12,14 @@ public class MainMenuCanvasBehaviour : MonoBehaviour
         CartBehaviour.NextCartId = -1;
         StartButton.onClick.AddListener(() =>
         {
-            CartBehaviour.NextCartId = 0;
+            PlayerBehaviour player = FindObjectOfType<PlayerBehaviour>();
+            
             this.gameObject.SetActive(false);
             
-            // TODO activate score canvas
+            player.Reset();
+            player.ScoreCanvas.gameObject.SetActive(true);
+
+            CartBehaviour.NextCartId = 0;
         });
     }
 }

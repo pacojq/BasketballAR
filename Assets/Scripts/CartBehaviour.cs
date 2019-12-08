@@ -32,9 +32,11 @@ public class CartBehaviour : MonoBehaviour
             Debug.LogWarning("Cannot pick ball yet.");
             return;
         }
-        
+
+        bool isMoneyBall = _ballCount == 1; // Last ball
         PlayerBehaviour player = FindObjectOfType<PlayerBehaviour>();
-        if (!player.SpawnBall())
+        
+        if (!player.SpawnBall(isMoneyBall))
         {
             Debug.LogWarning("The player cannot spawn any ball.");
             return;
