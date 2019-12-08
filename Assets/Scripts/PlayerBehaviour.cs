@@ -41,4 +41,10 @@ public class PlayerBehaviour : MonoBehaviour
         _current = null;
     }
 
+
+    public void NotifyScore()
+    {
+        Debug.Log("SCORE!!!!");
+    }
+
 }
