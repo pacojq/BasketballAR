@@ -11,7 +11,6 @@ public class BallBehaviour : MonoBehaviour
     
     
     private Rigidbody _rb;
-    private Transform _target;
 
     public float MaxHeight = 0.25f;
     public float Gravity = -0.9f;
@@ -25,8 +24,6 @@ public class BallBehaviour : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _rb.useGravity = false;
-        
-        _target = GameObject.FindWithTag(TARGET_TAG).transform;
     }
 
 
@@ -44,25 +41,28 @@ public class BallBehaviour : MonoBehaviour
     private Vector3 CalculateLaunchVelocity(Vector3 targetPos)
     {
         Vector3 ballPos = this.transform.position;
-        
+
         float dy = targetPos.y - ballPos.y;
-        
+
         Vector3 dxz = new Vector3(
-                targetPos.x - ballPos.x,
-                0,
-                targetPos.z - ballPos.z
-            );
+            targetPos.x - ballPos.x,
+            0,
+            targetPos.z - ballPos.z
+        );
 
         Vector3 spdY = Vector3.up * Mathf.Sqrt(-2 * Gravity * MaxHeight);
-        Vector3 spdXZ = dxz / (Mathf.Sqrt(-2 * MaxHeight / Gravity) + Mathf.Sqrt(2 * (dy - MaxHeight) / Gravity));
+        Vector3 spdXZ = dxz / (Mathf.Sqrt((-2 * MaxHeight) / Gravity) + Mathf.Sqrt((2f * (dy - MaxHeight)) / Gravity));
+
+        if (float.IsNaN(spdXZ.x) || float.IsNaN(spdXZ.z))
+            return Vector3.zero;
 
         return spdXZ + spdY;
     }
 
 
-    public void OnCollisionEnter(Collision other)
+    public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == TARGET_TAG)
+        if (other.gameObject.CompareTag(TARGET_TAG))
         {
             FindObjectOfType<PlayerBehaviour>().NotifyScore();
         }
@@ -82,7 +82,7 @@ public class BallBehaviour : MonoBehaviour
         _sw.Stop();
         long elapsed = _sw.ElapsedMilliseconds;
         
-        // TODO check if elapsed is too big
+        // TODO check if elapsed is too big ?
 
         Vector2 mouseEnd = Input.mousePosition;
         float dy = mouseEnd.y - _mousePos.y;
@@ -93,9 +93,19 @@ public class BallBehaviour : MonoBehaviour
         Debug.Log($"Elapsed millis: {elapsed} ms");
         Debug.Log($"SPEED: {spd} ms");
 
-        this.transform.SetParent(null);
+        
+        
+        Transform parent = null;
+        GameObject vuforia = GameObject.FindWithTag("vuforia-image");
+        if (vuforia != null)
+            parent = vuforia.transform;
+        
+        this.transform.SetParent(parent);
+        
+        
+        
 
-        Vector3 target = _target.position;
+        Vector3 target = GameObject.FindWithTag(TARGET_TAG).transform.position;
         Vector3 pos = this.transform.position;
         
         Vector2 delta = new Vector2(target.x, target.z) - new Vector2(pos.x, pos.z);
@@ -105,27 +115,24 @@ public class BallBehaviour : MonoBehaviour
         {
             spd -= 4;
             target += new Vector3(
-                spd * 0.1f * delta.x,
+                spd * 0.05f * delta.x,
                 0,
-                spd * 0.1f * delta.y
+                spd * 0.05f * delta.y
             );
         }
         else if (spd > 6) // Too fast
         {
             spd -= 6;
             target += new Vector3(
-                spd * 0.02f * delta.x,
+                spd * 0.05f * delta.x,
                 0,
-                spd * 0.02f * delta.y
+                spd * 0.05f * delta.y
             );
         }
-        else // Good speed, in range [4, 6]
-        {
-            
-        }
-        
-        MaxHeight += 0.05f * (spd - 5);
-        MaxHeight = Mathf.Clamp(MaxHeight, 0.05f, 0.45f);
+
+        MaxHeight = (target.y - this.transform.position.y) + 0.25f;// 0.5f;
+        MaxHeight += 0.005f * (spd - 5);
+        MaxHeight = Mathf.Max(MaxHeight, 0.05f);
         
         // TODO wiggle due to mouse x ?
         
