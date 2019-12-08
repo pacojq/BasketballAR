@@ -31,7 +31,7 @@ public class PlayerBehaviour : MonoBehaviour
 
 
         BallBehaviour ball = Instantiate(BallPrefab, SpawnAnchor);
-
+        _current = ball;
 
         return true;
     }

@@ -1,18 +1,38 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class BallBehaviour : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private Stopwatch _sw;
+    private Vector2 _mousePos;
 
-    // Update is called once per frame
-    void Update()
+
+    private void OnMouseDown()
     {
+        _mousePos = Input.mousePosition; 
+        Debug.Log($"Mouse down: {_mousePos}");
+        _sw = new Stopwatch();
+        _sw.Start();
+    }
+    
+    private void OnMouseUp()
+    {
+        _sw.Stop();
+        long elapsed = _sw.ElapsedMilliseconds;
         
+        // TODO check if elapsed is too big
+
+        Vector2 mouseEnd = Input.mousePosition;
+        float dy = mouseEnd.y - _mousePos.y;
+
+        float spd = dy / elapsed;
+        
+        Debug.Log($"Delta Y: {dy}");
+        Debug.Log($"Elapsed millis: {elapsed} ms");
+        Debug.Log($"SPEED: {spd} ms");
     }
 }
