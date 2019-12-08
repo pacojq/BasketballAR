@@ -36,4 +36,9 @@ public class PlayerBehaviour : MonoBehaviour
         return true;
     }
 
+    public void NotifyBallShot()
+    {
+        _current = null;
+    }
+
 }
